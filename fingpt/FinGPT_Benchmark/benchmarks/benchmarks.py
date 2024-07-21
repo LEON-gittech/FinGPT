@@ -3,28 +3,31 @@ from peft import PeftModel, get_peft_model, LoraConfig, TaskType  # 0.4.0
 import torch
 import argparse
 
-
+import sys
+import sys
+sys.path.append('../')
+sys.path.append("/opt/tiger/FinGPT")
+sys.path.append("/opt/tiger/FinGPT/fingpt/FinGPT_Benchmark/benchmarks")
 from fpb import test_fpb, test_fpb_mlt
 from fiqa import test_fiqa, test_fiqa_mlt 
 from tfns import test_tfns
 from nwgi import test_nwgi
 from headline import test_headline
 from ner import test_ner
-from convfinqa import test_convfinqa
+# from convfinqa import test_convfinqa
 from fineval import test_fineval
 from finred import test_re
 
-
-import sys
-sys.path.append('../')
 from utils import *
 
 
 def main(args):
+    print(args.from_remote)
     if args.from_remote:
         model_name = parse_model_name(args.base_model, args.from_remote)
     else:
-        model_name = '../' + parse_model_name(args.base_model)
+        # model_name = '../' + parse_model_name(args.base_model)
+        model_name = args.base_model
         
 
     model = AutoModelForCausalLM.from_pretrained(
@@ -99,7 +102,8 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", required=True, type=str)
-    parser.add_argument("--base_model", required=True, type=str, choices=['chatglm2', 'llama2', 'llama2-13b', 'llama2-13b-nr', 'baichuan', 'falcon', 'internlm', 'qwen', 'mpt', 'bloom'])
+    # parser.add_argument("--base_model", required=True, type=str, choices=['chatglm2', 'llama2', 'llama2-13b', 'llama2-13b-nr', 'baichuan', 'falcon', 'internlm', 'qwen', 'mpt', 'bloom'])
+    parser.add_argument("--base_model", required=True, type=str)
     parser.add_argument("--peft_model", required=True, type=str)
     parser.add_argument("--max_length", default=512, type=int)
     parser.add_argument("--batch_size", default=4, type=int, help="The train batch size per device")

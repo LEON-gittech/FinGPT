@@ -6,10 +6,10 @@ import torch
 from torch.utils.data import DataLoader
 from functools import partial
 from pathlib import Path
-from fingpt.FinGPT_Benchmark.utils import *
-
 import sys
 sys.path.append('../')
+sys.path.append('/opt/tiger/FinGPT')
+from fingpt.FinGPT_Benchmark.utils import *
     
     
     

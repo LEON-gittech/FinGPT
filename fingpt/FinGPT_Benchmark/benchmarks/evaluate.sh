@@ -6,12 +6,12 @@
 
 #---- Relation Extraction ----
 
-python benchmarks.py \
---dataset re \
---base_model llama2 \
---peft_model ../finetuned_models/finred-llama2-linear_202310012254 \
---batch_size 8 \
---max_length 512
+# python benchmarks.py \
+# --dataset re \
+# --base_model llama2 \
+# --peft_model ../finetuned_models/finred-llama2-linear_202310012254 \
+# --batch_size 8 \
+# --max_length 512
 
 # python benchmarks.py \
 # --dataset re \
@@ -141,12 +141,19 @@ python benchmarks.py \
 # --batch_size 8 \
 # --max_length 512
 
-# python benchmarks.py \
+# python3 benchmarks.py \
 # --dataset fpb,fiqa,tfns,nwgi,headline,ner,re \
 # --base_model chatglm2 \
 # --peft_model ../finetuned_models/MT-chatglm2-linear_202309201120 \
 # --batch_size 8 \
 # --max_length 512
+
+python3 benchmarks.py \
+--dataset fpb,fiqa,tfns,nwgi \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/llama-3-8b-bnb-4bit \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid_pos_public_20000_fedavg_c10s2_i10_b16a2_l2048_r16a16 \
+--batch_size 8 \
+--max_length 512
 
 # python benchmarks.py \
 # --dataset fpb,fiqa,tfns,nwgi,headline,ner,re \
