@@ -148,12 +148,94 @@
 # --batch_size 8 \
 # --max_length 512
 
-python3 benchmarks.py \
---dataset fpb,fiqa,tfns,nwgi \
---base_model /mnt/bn/data-tns-live-llm/leon/datasets/llama-3-8b-bnb-4bit \
+CUDA_VISIBLE_DEVICES=4 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid_pos_public_20000_fedavg_c10s2_i10_b16a2_l2048_r16a16 \
 --peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid_pos_public_20000_fedavg_c10s2_i10_b16a2_l2048_r16a16 \
 --batch_size 8 \
---max_length 512
+--max_length 512 > iid_pos_public.out &
+
+CUDA_VISIBLE_DEVICES=5 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/niid_pos_public_20000_fedavg_c10s2_i10_b16a2_l2048_r16a16 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/niid_pos_public_20000_fedavg_c10s2_i10_b16a2_l2048_r16a16 \
+--batch_size 8 \
+--max_length 512 > niid_pos_public.out &
+
+————————————————————————————————————————————fin————————————————————————————————
+# todo
+CUDA_VISIBLE_DEVICES=4 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/pos_fin_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/pos_fin_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > pos_fin.out &
+
+CUDA_VISIBLE_DEVICES=5 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/neg_fin_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/neg_fin_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > neg_fin.out & 
+
+CUDA_VISIBLE_DEVICES=6 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/llama-3-8b-bnb-4bit/ \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/llama-3-8b-bnb-4bit/ \
+--batch_size 8 \
+--max_length 512 > baseline_fin.out & 
+
+CUDA_VISIBLE_DEVICES=7 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid2niid_fin_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid2niid_fin_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > iid2niid_fin.out &
+
+CUDA_VISIBLE_DEVICES=3 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid2niid_fin_filter_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/iid2niid_fin_filter_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > iid2niid_fin_filter.out &
+
+CUDA_VISIBLE_DEVICES=2 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/random_med_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/random_med_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > random_fin.out &
+————————————————————————————————————————————fin————————————————————————————————
+
+————————————————————————————————————————————public niid dir————————————————————————————————
+CUDA_VISIBLE_DEVICES=4 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_10_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_10_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > public_10.out &
+
+CUDA_VISIBLE_DEVICES=5 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_1_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_1_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > public_1.out & 
+
+CUDA_VISIBLE_DEVICES=6 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_0.1_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_0.1_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > public_0.1.out & 
+
+CUDA_VISIBLE_DEVICES=7 nohup python3 benchmarks.py \
+--dataset fpb,fiqa,tfns \
+--base_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_0.01_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--peft_model /mnt/bn/data-tns-live-llm/leon/datasets/fed/public_0.01_20000_fedavg_c10s2_i10_b16a2_l2048_r32a64_f0 \
+--batch_size 8 \
+--max_length 512 > public_0.01.out &
+————————————————————————————————————————————public niid dir————————————————————————————————
 
 # python benchmarks.py \
 # --dataset fpb,fiqa,tfns,nwgi,headline,ner,re \

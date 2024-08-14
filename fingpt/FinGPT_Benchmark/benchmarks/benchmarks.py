@@ -19,37 +19,45 @@ from fineval import test_fineval
 from finred import test_re
 
 from utils import *
-
+from unsloth import FastLanguageModel 
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 def main(args):
-    print(args.from_remote)
-    if args.from_remote:
-        model_name = parse_model_name(args.base_model, args.from_remote)
-    else:
-        # model_name = '../' + parse_model_name(args.base_model)
-        model_name = args.base_model
-        
+    # print(args.from_remote)
+    # if args.from_remote:
+    #     model_name = parse_model_name(args.base_model, args.from_remote)
+    # else:
+    #     # model_name = '../' + parse_model_name(args.base_model)
+    #     model_name = args.base_model
+    
 
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name, trust_remote_code=True, 
-        # load_in_8bit=True
-        device_map="auto",
-        # fp16=True
-    )
-    model.model_parallel = True
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    # model = AutoModelForCausalLM.from_pretrained(
+    #     model_name, trust_remote_code=True, 
+    #     # load_in_8bit=True
+    #     device_map="auto",
+    #     # fp16=True
+    # )
+    # model.model_parallel = True
+
+    # tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     
     # tokenizer.pad_token_id = tokenizer.eos_token_id
 
-    tokenizer.padding_side = "left"
-    if args.base_model == 'qwen':
-        tokenizer.eos_token_id = tokenizer.convert_tokens_to_ids('<|endoftext|>')
-        tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids('<|extra_0|>')
-    if not tokenizer.pad_token or tokenizer.pad_token_id == tokenizer.eos_token_id:
-        tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-        model.resize_token_embeddings(len(tokenizer))
-    
+    model, tokenizer = FastLanguageModel.from_pretrained(args.base_model, dtype = torch.bfloat16, load_in_4bit=True)
+    FastLanguageModel.for_inference(model)
+    model.generation_config.pad_token_id = tokenizer.eos_token_id
+    print(tokenizer.padding_side)
+    # tokenizer.padding_side = "left"
+    # if args.base_model == 'qwen':
+    #     tokenizer.eos_token_id = tokenizer.convert_tokens_to_ids('<|endoftext|>')
+    #     tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids('<|extra_0|>')
+    # if not tokenizer.pad_token or tokenizer.pad_token_id == tokenizer.eos_token_id:
+    #     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+    #     model.resize_token_embeddings(len(tokenizer))
+
+    # model = PeftModel.from_pretrained(model, args.peft_model)
+    # model = model.eval()
     print(f'pad: {tokenizer.pad_token_id}, eos: {tokenizer.eos_token_id}')
     
     # peft_config = LoraConfig(
@@ -63,9 +71,6 @@ def main(args):
     # )
     # model = get_peft_model(model, peft_config)
     # model.load_state_dict(torch.load(args.peft_model + '/pytorch_model.bin'))
-
-    model = PeftModel.from_pretrained(model, args.peft_model)
-    model = model.eval()
     
     with torch.no_grad():
         for data in args.dataset.split(','):
